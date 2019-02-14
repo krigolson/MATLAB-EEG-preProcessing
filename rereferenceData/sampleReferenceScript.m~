@@ -1,0 +1,27 @@
+% sample call to doRereference
+
+clear all;
+close all;
+clc;
+
+load('sampleEEGData.mat');
+
+amountOfDataToPlot = 500;
+referenceChannels = {''};
+
+% get some data to plot from before the rereference
+preRereferenceData = squeeze(EEG.data(1,1:amountOfDataToPlot));
+
+% rereference the data
+EEG.data = doRereference(EEG.data,referenceChannels,EEG.chanlocs);
+
+% get some data to plot post filter
+postRereferenceData = EEG.data(1,1:amountOfDataToPlot);
+
+% plot some stuff
+subplot(1,2,1);
+plot([1:1:amountOfDataToPlot],preRereferenceData,'linewidth',3);
+%hold on;
+subplot(1,2,2);
+plot([1:1:amountOfDataToPlot],postRereferenceData,'linewidth',3);
+%hold off;
