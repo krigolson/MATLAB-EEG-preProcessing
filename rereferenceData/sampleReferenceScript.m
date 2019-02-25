@@ -26,4 +26,4 @@ postRereferenceData = EEG.data(channelToPlot,1:amountOfDataToPlot);
 plot([1:1:amountOfDataToPlot],preRereferenceData,'linewidth',3);
 hold on;
 plot([1:1:amountOfDataToPlot],postRereferenceData,'linewidth',3);
-hold off;
+hold off; 

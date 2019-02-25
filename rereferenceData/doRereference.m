@@ -1,4 +1,4 @@
-function data = doRereference(data,referenceChannels,chanlocs)
+function inputData = doRereference(inputData,referenceChannels,chanlocs)
 
 % function to rereference EEG data, supports a single channel reference, a two channel reference, or a mean
 % reference
@@ -8,6 +8,16 @@ function data = doRereference(data,referenceChannels,chanlocs)
 % {'AVERAGE'} for an average reference
 % a valid channel location file must be supplied to detemine channel
 % indicies
+
+    % added support so either an EEG lab structure or a channels x time
+    % matrix can be submitted
+    if isstruct(inputData)
+        data = inputData.data;
+        % keep track of history for analysis report
+        inputData.referenceChannels = referenceChannels;
+    else
+        data = inputData;
+    end
     
     if strcmp(referenceChannels,'AVERAGE')
         
@@ -26,9 +36,7 @@ function data = doRereference(data,referenceChannels,chanlocs)
             referenceChannel = data(referenceChannel1,:); 
         else
             referenceChannel1 = find(strcmp(channelLabels,referenceChannels{1}));
-            referenceChannel1
             referenceChannel2 = find(strcmp(channelLabels,referenceChannels{2}));
-            referenceChannel2
             referenceChannel = (data(referenceChannel1,:) + data(referenceChannel2,:))/2;
         end
 
@@ -37,5 +45,15 @@ function data = doRereference(data,referenceChannels,chanlocs)
     for channelCounter = 1:size(data,1)
         data(channelCounter,:) = data(channelCounter,:) - referenceChannel;
     end
+    
+    if isstruct(inputData)
+        inputData.data = [];
+        inputData.data = data;
+    else
+        inputData = [];
+        inputData = data;
+    end
+    
+    disp('EEG data has been rereferenced...');
         
 end

@@ -12,7 +12,7 @@ load('rereferenceDemoData.mat');
 
 originalData = EEG.data;
 timePoints = [1:1:1000];
-reference1 = {'TP9' 'TP10'};
+reference1 = {'TP9'};
 reference2 = {'AF3' 'AF4'};
 reference3 = {'AVERAGE'};
 

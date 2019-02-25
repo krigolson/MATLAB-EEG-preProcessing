@@ -1,4 +1,4 @@
-function [data] = doFilter(data,filterLow,filterHigh,filterNotch,filterOrder,samplingRate)
+function [inputData] = doFilter(inputData,filterLow,filterHigh,filterNotch,filterOrder,samplingRate)
 
     % function doFilter to filter EEG data
     % by Olave Krigolson, January 29th, 2019
@@ -13,6 +13,19 @@ function [data] = doFilter(data,filterLow,filterHigh,filterNotch,filterOrder,sam
     % finally, the sampling rate of the EEG data is needed
     % sample call is 
     %eegData = doFilter(eegData,0.1,30,60,2,500);
+    
+    % add support for EEG lab data structure
+    if isstruct(inputData)
+        data = inputData.data;
+        samplingRate = inputData.srate;
+        % keep track of history for analysis report
+        inputData.filterLow = filterLow;
+        inputData.filterHigh = filterHigh;
+        inputData.filterNotch = filterNotch;
+        inputData.filterOrder = filterOrder;
+    else
+        data = inputData;
+    end
     
     dataLength = size(data,2);
     numberOfChannels = size(data,1); % number of channels
@@ -48,5 +61,15 @@ function [data] = doFilter(data,filterLow,filterHigh,filterNotch,filterOrder,sam
             data(channelCounter,:) = filtfilt(b,a,double(data(channelCounter,:)));  
         end
     end
+    
+    if isstruct(inputData)
+        inputData.data = [];
+        inputData.data = data;
+    else
+        inputData = [];
+        inputData = data;
+    end
+    
+    disp('EEG data has been filtered...');
 
 end
