@@ -1,4 +1,4 @@
-function EEG = doEpochData(EEG,epochMarkers,epochTimes)
+function inputData = doEpochData(inputData,epochMarkers,epochTimes)
 
     % by Olave Krigolson
     % function to run EEGLABs pop_epoch fundtion to convert the continuous matrix into epoched data
@@ -7,10 +7,10 @@ function EEG = doEpochData(EEG,epochMarkers,epochTimes)
     
     epochTimes = epochTimes / 1000;
 
-    EEG = pop_epoch(EEG,epochMarkers,epochTimes);
+    inputData = pop_epoch(inputData,epochMarkers,epochTimes);
     
-    EEG.epochMarkers = epochMarkers;
-    EEG.epochTimes = epochTimes;
+    inputData.epochMarkers = epochMarkers;
+    inputData.epochTimes = epochTimes;
     
     disp('EEG data has been epoched...');
         
