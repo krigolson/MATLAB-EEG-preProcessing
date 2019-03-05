@@ -4,7 +4,7 @@ clc;
 
 [EEG] = doLoadBVData('Cognitive_Assessment_01.vhdr');
 
-% doRawDataInspection(EEG);
+doRawDataInspection(EEG);
 
 % not needed but here for demonstration purposes
 %[EEG] = doRemoveChannels(EEG,{},EEG.chanlocs);

@@ -1,4 +1,4 @@
-function inputData = doEpochData(inputData,removeChannels,chanlocs)
+function inputData = doRemoveChannels(inputData,removeChannels,chanlocs)
 
     % by Olave Krigolson
     % function to remove EEG channels sent in as a list

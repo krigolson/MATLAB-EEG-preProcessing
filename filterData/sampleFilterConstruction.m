@@ -23,8 +23,8 @@ dataLength = length(sampleData);
 nyquistFrequency = 0.5*samplingRate; 
 
 % set some filter parameters
-filterRange = [0.1 30];             % these are the low pass and high pass filter values
-filterOrder = 2;                    % this is the filter order - see Luck, 2015 for more detail
+filterRange = [50 100];             % these are the low pass and high pass filter values
+filterOrder = 15;                    % this is the filter order - see Luck, 2015 for more detail
 
 % construct the filter
 [b,a] = butter(filterOrder,([filterRange(1) filterRange(2)]/nyquistFrequency));   % compute the filter parameters b and a
