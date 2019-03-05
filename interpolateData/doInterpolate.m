@@ -4,7 +4,9 @@ function [inputData] = doInterpolate(inputData,chanlocs,method)
     % and the people who developed EEGLAB
 
     % note this function is EEGlab dependent
-    
+    inputData.interpolate = 1;
+    inputData.interpolateChannelsPrior = size(inputData,1);
+    inputData.interpolateChannels = inputData.chanlocs;    
     [inputData] = interpol(inputData, chanlocs, method);
-    
+
 end
