@@ -44,6 +44,7 @@ for fileCounter = 1:length(fileNames)
 end
 
 channel = 52;
+chanlocs = STUDY.ERP.chanlocs{1};
 
 % averaging
 times = STUDY.ERP.times(:,1);
@@ -53,7 +54,7 @@ dwerps = erps(:,:,1,:) - erps(:,:,2,:);
 granddwerps = mean(dwerps,4);
 
 % plots
-subplot(1,2,1);
+subplot(1,3,1);
 plot(times,granderps(channel,:,1));
 hold on;
 plot(times,granderps(channel,:,2));
@@ -61,7 +62,7 @@ hold off;
 title('Condition Waveforms');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
-subplot(1,2,2);
+subplot(1,3,2);
 plot(times,granddwerps(channel,:,1));
 title('Difference Waveform');
 xlabel('Time (ms)');
@@ -69,6 +70,10 @@ ylabel('Voltage (uV)');
 
 [max maxPosition] = max(granddwerps(channel,:));
 
-% peak detection
-peakWidth = 15;
-[maxPeaks maxTimes] = max(dwerps(channel,maxPosition-peakWidth:maxPosition+peakWidth,1,:),[],4);
+[maxp300Peaks maxp300Times maxP300Topos] = maxPeakDetection(dwerps,times,channel,times(maxPosition),10);
+
+[meanp300Peaks meanp300Times meanP300Topos] = meanPeakDetection(dwerps,times,channel,times(maxPosition),10);
+
+subplot(1,3,3);
+topoData = mean(maxP300Topos,2);
+topoplot(topoData,chanlocs, 'verbose','off','style','fill','numcontour',8);
