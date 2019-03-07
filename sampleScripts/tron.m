@@ -40,7 +40,20 @@ for fileCounter = 1:length(fileNames)
     STUDY.ERP.epochMarker(fileCounter).markers = DISC.EEG.epochMarkers;
     STUDY.ERP.artifactMethods{fileCounter} = DISC.EEG.artifactMethods;
     STUDY.ERP.artifactPercentages(fileCounter,:) = DISC.EEG.channelArtifactPercentages;
-    
+
+    STUDY.FFT.data(:,:,:,fileCounter) = DISC.FFT.data;
+    STUDY.FFT.frequencies(fileCounter,:) = DISC.FFT.frequencies;
+
+    STUDY.WAV.data(:,:,:,:,fileCounter) = DISC.WAV.data;
+    STUDY.WAV.percent(:,:,:,:,fileCounter) = DISC.WAV.percent;
+    STUDY.WAV.frequencies(fileCounter,:) = DISC.WAV.frequencies;
+    STUDY.WAV.preprocessing(fileCounter,1) = DISC.WAV.frequencyRange(1);
+    STUDY.WAV.preprocessing(fileCounter,2) = DISC.WAV.frequencyRange(2);
+    STUDY.WAV.preprocessing(fileCounter,3) = DISC.WAV.frequencySteps;
+    STUDY.WAV.preprocessing(fileCounter,4) = DISC.WAV.mortletParameter;
+    STUDY.WAV.preprocessing(fileCounter,5) = DISC.WAV.baseline(1);
+    STUDY.WAV.preprocessing(fileCounter,6) = DISC.WAV.baseline(2);
+
 end
 
 channel = 52;
@@ -54,6 +67,7 @@ dwerps = erps(:,:,1,:) - erps(:,:,2,:);
 granddwerps = mean(dwerps,4);
 
 % plots
+figure(1);
 subplot(1,3,1);
 plot(times,granderps(channel,:,1));
 hold on;
@@ -68,12 +82,35 @@ title('Difference Waveform');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
 
-[max maxPosition] = max(granddwerps(channel,:));
+[maxValue maxPosition] = max(granddwerps(channel,:));
 
-[maxp300Peaks maxp300Times maxP300Topos] = maxPeakDetection(dwerps,times,channel,times(maxPosition),10);
+[maxp300Peaks maxp300Times maxP300Topos] = maxPeakDetection(dwerps,times,channel,times(maxPosition),100);
 
 [meanp300Peaks meanp300Times meanP300Topos] = meanPeakDetection(dwerps,times,channel,times(maxPosition),10);
 
 subplot(1,3,3);
 topoData = mean(maxP300Topos,2);
 topoplot(topoData,chanlocs, 'verbose','off','style','fill','numcontour',8);
+
+figure(2);
+channel = 52;
+frequencies = STUDY.FFT.frequencies(1,:);
+fftdata = STUDY.FFT.data;
+meanfftdata = mean(fftdata,4);
+dwfftdata = fftdata(:,:,1,:) - fftdata(:,:,2,:);
+meandwfftdata = mean(dwfftdata,4);
+subplot(1,3,1);
+plot(frequencies(1:60),meanfftdata(channel,1:60,1));
+hold on;
+plot(frequencies(1:60),meanfftdata(channel,1:60,2));
+hold off;
+subplot(1,3,2);
+plot(frequencies(1:60),meandwfftdata(channel,1:60,1));
+
+[fftPower freqtopo] = frequencyExtraction(dwfftdata,frequencies,channel,[9.5 9.5]);
+
+subplot(1,3,3);
+meanfreqtopo = mean(freqtopo,2);
+topoplot(meanfreqtopo,chanlocs, 'verbose','off','style','fill','numcontour',8);
+
+[tresult presult cresult] = wavAnalysis(STUDY.WAV.data,channel,[1 2],60,500,1000,0.1);

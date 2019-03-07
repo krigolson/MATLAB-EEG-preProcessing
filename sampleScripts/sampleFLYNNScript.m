@@ -15,6 +15,8 @@ for fileCounter = 1:length(fileNames)
     currentFileName
 
     [EEG] = [];
+    [FFT] = [];
+    [WAV] = [];
     [EEG] = doLoadBVData(currentFileName);
     
     % correct a small problem in terms of marker naming...
@@ -29,6 +31,8 @@ for fileCounter = 1:length(fileNames)
     
     % put the fileName into the EEG data structure
     EEG.fileName = currentFileName;
+
+    [EEG] = doResample(EEG,250);
 
     % if needed
     %[EEG] = doRemoveChannels(EEG,{},EEG.chanlocs);
@@ -54,12 +58,18 @@ for fileCounter = 1:length(fileNames)
         [EEG] = doRemoveChannels(EEG,{'C1','PO4'},EEG.chanlocs);
         [EEG] = doInterpolate(EEG,chanlocs,'spherical');
     end
+
+    if fileCounter == 30
+        chanlocs = EEG.chanlocs;
+        [EEG] = doRemoveChannels(EEG,{'Fp1','T8'},EEG.chanlocs);
+        [EEG] = doInterpolate(EEG,chanlocs,'spherical');
+    end
         
     [EEG] = doRereference(EEG,{'TP9','TP10'},EEG.chanlocs);
 
     [EEG] = doFilter(EEG,0.1,30,60,2,500);
 
-    [EEG] = doEpochData(EEG,{'S202','S203'},[-200 800]);
+    [EEG] = doEpochData(EEG,{'S202','S203'},[-500 1500]);
 
     [EEG] = doBaseline(EEG,[-200,0]);
 
@@ -69,10 +79,16 @@ for fileCounter = 1:length(fileNames)
     [EEG] = doRemoveEpochs(EEG,EEG.artifactPresent);
 
     [ERP] = doERP(EEG,{'S202','S203'});
+
+    [FFT] = doFFT(EEG,{'S202','S203'});
+
+    [WAV] = doWAV(EEG,{'S202','S203'},[-500 -300],1,30,60,6);
     
     % a Krigolson Lab legacy joke in terms of the name, create a variable to store all the data
     DISC.EEG = EEG;
     DISC.ERP = ERP;
+    DISC.FFT = FFT;
+    DISC.WAV = WAV;
     
     save(currentFileName,'DISC');
     

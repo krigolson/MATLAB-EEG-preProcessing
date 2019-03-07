@@ -15,9 +15,10 @@ clc;
 [EEG] = doFilter(EEG,0.1,30,60,2,500);
 
 [EEG] = doICA(EEG,0);
-doICAPlotComponents(icaEEG,25);
-doICAPlotComponentLoadings(icaEEG,16,[1001 2000]);
+doICAPlotComponents(EEG,25);
+doICAPlotComponentLoadings(EEG,16,[1001 2000]);
 componentsToRemove = [];
+
 [EEG] = doICARemoveComponents(EEG,componentsToRemove);
 
 [EEG] = doEpochData(EEG,{'S202','S203'},[-200 800]);
