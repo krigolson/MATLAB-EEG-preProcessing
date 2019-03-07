@@ -4,14 +4,6 @@ clc;
 
 [EEG] = doLoadBVData('Cognitive_Assessment_03.vhdr');
 
-% doRawDataInspection(EEG);
-
-% not needed but here for demonstration purposes
-% [EEG] = doRemoveChannels(EEG,{},EEG.chanlocs);
-
-% not needed but here for demonstration purposes
-% [EEG] = doInterpolate(EEG,EEG.chanlocs,'spherical');
-
 [EEG] = doRereference(EEG,{'TP9','TP10'},EEG.chanlocs);
 
 [EEG] = doFilter(EEG,0.1,30,60,2,500);
