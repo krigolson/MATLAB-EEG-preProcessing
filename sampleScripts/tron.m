@@ -68,7 +68,7 @@ granddwerps = mean(dwerps,4);
 
 % plots
 figure(1);
-subplot(1,3,1);
+subplot(3,1,1);
 plot(times,granderps(channel,:,1));
 hold on;
 plot(times,granderps(channel,:,2));
@@ -76,7 +76,7 @@ hold off;
 title('Condition Waveforms');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
-subplot(1,3,2);
+subplot(3,1,2);
 plot(times,granddwerps(channel,:,1));
 title('Difference Waveform');
 xlabel('Time (ms)');
@@ -88,7 +88,7 @@ ylabel('Voltage (uV)');
 
 [meanp300Peaks meanp300Times meanP300Topos] = meanPeakDetection(dwerps,times,channel,times(maxPosition),10);
 
-subplot(1,3,3);
+subplot(3,1,3);
 topoData = mean(maxP300Topos,2);
 topoplot(topoData,chanlocs, 'verbose','off','style','fill','numcontour',8);
 
@@ -107,10 +107,10 @@ hold off;
 subplot(1,3,2);
 plot(frequencies(1:60),meandwfftdata(channel,1:60,1));
 
-[fftPower freqtopo] = frequencyExtraction(dwfftdata,frequencies,channel,[9.5 9.5]);
+[fftPower freqtopo] = frequencyExtraction(dwfftdata,frequencies,channel,[4 7]);
 
 subplot(1,3,3);
 meanfreqtopo = mean(freqtopo,2);
 topoplot(meanfreqtopo,chanlocs, 'verbose','off','style','fill','numcontour',8);
 
-[tresult presult cresult] = wavAnalysis(STUDY.WAV.data,channel,[1 2],60,500,1000,0.1);
+[tresult presult cresult] = wavAnalysis(STUDY.WAV.data,34,[1 2],60,500,1000,0.2);
