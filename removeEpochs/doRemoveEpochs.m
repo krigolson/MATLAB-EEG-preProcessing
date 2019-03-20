@@ -30,6 +30,10 @@ function inputData = doRemoveEpochs(inputData,removalMatrix)
         return
     end
     
+    bar(inputData.channelArtifactPercentages);
+    ylim([0 100]);
+    title('Artifact Percentages for Each Channel for Current Participant');
+    
     disp('EEG epochs have now been removed...');
     
 end
