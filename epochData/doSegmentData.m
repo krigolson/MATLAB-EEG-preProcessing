@@ -1,9 +1,8 @@
 function inputData = doSegmentData(inputData,epochMarkers,epochTimes)
 
-    % by Olave Krigolson
-    % function to run EEGLABs pop_epoch fundtion to convert the continuous matrix into epoched data
-    % did fix this so that it is in ms so epoch times could be [-200 1000];
-    % markers are in EEGLAB format, i.e., {'5','6'}
+    % by Olave Krigolson, March 19, 2019
+    % function to replace pop_epoch as it has problems dealing with
+    % overlapped segments.
     
     startPoint = round(epochTimes(1)*inputData.srate/1000);
     endPoint = round(epochTimes(2)*inputData.srate/1000);
