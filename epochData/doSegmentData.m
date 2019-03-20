@@ -17,7 +17,7 @@ function inputData = doSegmentData(inputData,epochMarkers,epochTimes)
             if strcmp(inputData.event(segmentCounter).type,epochMarkers{markerCounter})
                 
                 tempSegment = [];
-                currentLatency = inputData.event(segmentCounter).latency;
+                currentLatency = round(inputData.event(segmentCounter).latency);
                 tempSegment = inputData.data(:,currentLatency+startPoint:currentLatency+endPoint);
                 tempData(:,:,epochCounter) = tempSegment;
                 inputData.epoch(epochCounter).event = epochCounter;
