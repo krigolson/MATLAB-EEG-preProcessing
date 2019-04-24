@@ -16,7 +16,7 @@ preFilterData = squeeze(EEG.data(1,1:amountOfDataToPlot));
 preFilterData = preFilterData - mean(preFilterData);
 
 % filter the data with a band pass filter
-EEG.data = doFilter(EEG.data,lowCutoff,highCutoff,notchFilter,filterOrder,samplingRate);
+EEG.data = doFilter(EEG.data,lowCutoff,highCutoff,filterOrder,notchFilter,samplingRate);
 
 % get some data to plot post filter
 postFilterData = EEG.data(1,1:amountOfDataToPlot);

@@ -9,6 +9,7 @@ load('sampleEEGData.mat');
 channelToPlot = 1;
 amountOfDataToPlot = 500;
 referenceChannels = {'TP9' 'TP10'};
+channelsToReference = {'ALL'};
 
 % filter the data to remove the offsets
 EEG.data = doFilter(EEG.data,0.1,30,60,4,EEG.srate);
@@ -17,7 +18,7 @@ EEG.data = doFilter(EEG.data,0.1,30,60,4,EEG.srate);
 preRereferenceData = squeeze(EEG.data(channelToPlot,1:amountOfDataToPlot));
 
 % rereference the data
-EEG.data = doRereference(EEG.data,referenceChannels,EEG.chanlocs);
+EEG.data = doRereference(EEG.data,referenceChannels,channelsToReference,EEG.chanlocs);
 
 % get some data to plot post filter
 postRereferenceData = EEG.data(channelToPlot,1:amountOfDataToPlot);

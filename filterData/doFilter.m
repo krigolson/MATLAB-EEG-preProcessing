@@ -1,4 +1,4 @@
-function [inputData] = doFilter(inputData,filterLow,filterHigh,filterNotch,filterOrder,samplingRate)
+function [inputData] = doFilter(inputData,filterLow,filterHigh,filterOrder,filterNotch,samplingRate)
 
     % function doFilter to filter EEG data
     % by Olave Krigolson, January 29th, 2019
@@ -69,7 +69,5 @@ function [inputData] = doFilter(inputData,filterLow,filterHigh,filterNotch,filte
         inputData = [];
         inputData = data;
     end
-    
-    disp('EEG data has been filtered...');
 
 end

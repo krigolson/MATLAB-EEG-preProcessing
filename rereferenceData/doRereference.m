@@ -1,4 +1,4 @@
-function inputData = doRereference(inputData,referenceChannels,chanlocs)
+function inputData = doRereference(inputData,referenceChannels,applyReferenceTo,chanlocs)
 
 % function to rereference EEG data, supports a single channel reference, a two channel reference, or a mean
 % reference
@@ -6,6 +6,8 @@ function inputData = doRereference(inputData,referenceChannels,chanlocs)
 % {'TP9'} for a single reference
 % {'TP9' 'TP10'} for a two channel reference
 % {'AVERAGE'} for an average reference
+% applyReferenceTo can be {'ALL'} or any subset of channels
+% {'AF1',AF2','AF3',...}
 % a valid channel location file must be supplied to detemine channel
 % indicies
 
@@ -15,17 +17,15 @@ function inputData = doRereference(inputData,referenceChannels,chanlocs)
         data = inputData.data;
         % keep track of history for analysis report
         inputData.referenceChannels = referenceChannels;
+        inputData.channelsReferenced = applyReferenceTo;
     else
         data = inputData;
     end
     
     if strcmp(referenceChannels,'AVERAGE')
-        
         % reference the data using the average of all channels
         referenceChannel = mean(data,1);
-
     else
-        
         % get a list of the channel names
         channelLabels = [];
         for i=1:length(chanlocs)
@@ -41,9 +41,17 @@ function inputData = doRereference(inputData,referenceChannels,chanlocs)
         end
 
     end
+    
     % subtract the reference channel from the data
-    for channelCounter = 1:size(data,1)
-        data(channelCounter,:) = data(channelCounter,:) - referenceChannel;
+    if strcmp(applyReferenceTo,'ALL')
+        for channelCounter = 1:size(data,1)
+            data(channelCounter,:) = data(channelCounter,:) - referenceChannel;
+        end
+    else
+        for channelCounter = 1:size(referenceChannels,2)
+            targetChannel = find(strcmp(channelLabels,applyReferenceTo{channelCounter}));
+            data(targetChannel,:) = data(targetChannel,:) - referenceChannel;
+        end
     end
     
     if isstruct(inputData)
