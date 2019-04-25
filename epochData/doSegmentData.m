@@ -9,6 +9,7 @@ function inputData = doSegmentData(inputData,epochMarkers,epochTimes)
     
     tempData = [];
     epochCounter = 1;
+    tempMarkers = [];
     
     for markerCounter = 1:size(epochMarkers,2)
         
@@ -30,12 +31,20 @@ function inputData = doSegmentData(inputData,epochMarkers,epochTimes)
                 inputData.epoch(epochCounter).eventcode = inputData.event(segmentCounter).code;
                 inputData.epoch(epochCounter).eventurevent = inputData.event(segmentCounter).urevent;
                 
+                tempMarkers(epochCounter,1) = epochCounter;
+                tempMarkers(epochCounter,2) = str2num(inputData.event(segmentCounter).type);
+                
                 epochCounter = epochCounter + 1;
                 
             end
             
         end
         
+    end
+    
+    if isfield(inputData,'allMarkers') == 1
+        inputData.allMarkers = [];
+        inputData.allMarkers = tempMarkers;
     end
 
     inputData.data = [];
@@ -51,7 +60,5 @@ function inputData = doSegmentData(inputData,epochMarkers,epochTimes)
     inputData.xmax = max(times);
     inputData.epochMarkers = epochMarkers;
     inputData.epochTimes = epochTimes;
-    
-    disp('EEG data has been epoched...');
         
 end

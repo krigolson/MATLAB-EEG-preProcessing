@@ -1,24 +1,69 @@
-function inputData = doRemoveEpochs(inputData,removalMatrix)
+function inputData = doRemoveEpochs(inputData,removalMatrix,optionFlag)
 
     % written as a shell by Olav Krigolson
-    % uses an input vector to remove trials from EEG data set
+    % uses an input vector to remove trials from EEG data set base on an
+    % artifact criteria
+    % set option flag to be equal to 0 if you want to remove all channels
+    % for a given "bad" epoch, set option flag to 1 to replace bad channel
+    % data with NaNs (i.e., seperate channel averaging), note this is
+    % typically not recommended as the blinks typically impact all channels
+    % to some extent
     
-    removalVector = sum(removalMatrix,1);
     numberOfEpochs = size(inputData.data,3);
     checkCounter = numberOfEpochs;
     
-    for epochCounter = numberOfEpochs:-1:1
+    if optionFlag == 0
     
-        if removalVector(epochCounter) ~= 0
+        removalVector = sum(removalMatrix,1);
+
+        for epochCounter = numberOfEpochs:-1:1
+
+            if removalVector(epochCounter) ~= 0
+
+                inputData.data(:,:,epochCounter) = [];
+                inputData.epoch(epochCounter) = [];
+                checkCounter = checkCounter - 1;
+
+                if isfield(inputData,'allMarkers') == 1
+                    inputData.allMarkers(epochCounter,:) = [];
+                end
+
+            end
+
+        end
+    end
+    if optionFlag == 1
+        
+        for epochCounter = numberOfEpochs:-1:1
             
-            inputData.data(:,:,epochCounter) = [];
-            inputData.event(epochCounter) = [];
-            checkCounter = checkCounter - 1;
+            isBad = 0;
+            
+            for channelCounter = 1:size(inputData,1)
+                
+                if removalMatrix(channelCounter,epochCounter) ~= 0
+                    
+                    isBad = isBad + 1;
+                    inputData.data(channelCounter,:,epochCounter) = NaN;
+                    
+                end
+                
+            end
+            
+            if isBad == size(inputData,1)   % i.e., all channels have bad data for an epoch
+                
+                inputData.epoch(epochCounter) = [];
+                checkCounter = checkCounter - 1;
+
+                if isfield(inputData,'allMarkers') == 1
+                    inputData.allMarkers(epochCounter,:) = [];
+                end
+                
+            end
             
         end
         
     end
-    
+
     inputData.channelArtifactPercentages = sum(removalMatrix,2)/numberOfEpochs*100;
     
     if checkCounter == 0
@@ -29,11 +74,5 @@ function inputData = doRemoveEpochs(inputData,removalMatrix)
         pause;
         return
     end
-    
-    bar(inputData.channelArtifactPercentages);
-    ylim([0 100]);
-    title('Artifact Percentages for Each Channel for Current Participant');
-    
-    disp('EEG epochs have now been removed...');
     
 end

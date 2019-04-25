@@ -37,8 +37,6 @@ function inputData = doRemoveChannels(inputData,removeChannels,chanlocs)
         % remove the channels
         removeCounter = numberOfChannelsToRemove;
         while 1
-            disp('Removing Channel...');
-            chanlocs(channelIndexToRemove(removeCounter)).labels
             data(channelIndexToRemove(removeCounter),:) = [];
             chanlocs(channelIndexToRemove(removeCounter)) = [];
             removeCounter = removeCounter - 1;
@@ -59,7 +57,7 @@ function inputData = doRemoveChannels(inputData,removeChannels,chanlocs)
             inputData = [];
             inputData = data;
         end
-    
-    disp('EEG channels have been removed...');
+        
+    end
         
 end

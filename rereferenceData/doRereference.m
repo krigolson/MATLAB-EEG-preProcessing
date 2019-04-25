@@ -61,7 +61,5 @@ function inputData = doRereference(inputData,referenceChannels,applyReferenceTo,
         inputData = [];
         inputData = data;
     end
-    
-    disp('EEG data has been rereferenced...');
         
 end

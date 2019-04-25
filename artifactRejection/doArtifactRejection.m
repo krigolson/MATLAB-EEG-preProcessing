@@ -24,8 +24,6 @@ function inputData = doArtifactRejection(inputData,type,criteria)
     end
     if strcmp('Gradient',type)
 
-        disp('Artifact Rejection: Gradient...');
-
         for channelCounter = 1:size(inputData.data,1)
 
             for segmentCounter = 1:size(inputData.data,3)
@@ -47,8 +45,6 @@ function inputData = doArtifactRejection(inputData,type,criteria)
 
     end
     if strcmp('Difference',type)
-
-        disp('Artifact Rejection: Difference...');
 
         for channelCounter = 1:size(inputData.data,1)
 
@@ -75,8 +71,6 @@ function inputData = doArtifactRejection(inputData,type,criteria)
     end
     if strcmp('Max',type)
 
-        disp('Artifact Rejection: Max...');
-
         for channelCounter = 1:size(inputData.data,1)
 
             for segmentCounter = 1:size(inputData.data,3)
@@ -97,8 +91,6 @@ function inputData = doArtifactRejection(inputData,type,criteria)
     end
     if strcmp('Min',type)
 
-        disp('Artifact Rejection: Min...');
-
         for channelCounter = 1:size(inputData.data,1)
 
             for segmentCounter = 1:size(inputData.data,3)
@@ -118,8 +110,6 @@ function inputData = doArtifactRejection(inputData,type,criteria)
 
     end    
     if strcmp('Variance',type)
-
-        disp('Artifact Rejection: Variance...');
 
         for channelCounter = 1:size(inputData.data,1)
 
@@ -147,7 +137,5 @@ function inputData = doArtifactRejection(inputData,type,criteria)
         inputData.artifactMethods{end+1} = type;
         inputData.artifactCriteria{end+1} = criteria;
     end
-
-    disp('EEG artifact rejection has been applied...');
     
 end
