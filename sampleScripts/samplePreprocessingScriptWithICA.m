@@ -2,14 +2,16 @@ clear all;
 close all;
 clc;
 
+
+
 [EEG] = doLoadBVData('Cognitive_Assessment_01.vhdr');
 
 % not needed but here for demonstration purposes
 % [EEG] = doRemoveChannels(EEG,{},EEG.chanlocs);
 
-[EEG] = doRereference(EEG,{'AVERAGE'},EEG.chanlocs);
+[EEG] = doRereference(EEG,{'AVERAGE'},{'ALL'},EEG.chanlocs);
 
-[EEG] = doFilter(EEG,0.1,30,60,2,500);
+[EEG] = doFilter(EEG,0.1,30,60,2,EEG.srate);
 
 [icaEEG] = doICA(EEG,0);
 doICAPlotComponents(EEG,25);
@@ -21,7 +23,7 @@ componentsToRemove = [1];
 % not needed but here for demonstration purposes
 % [EEG] = doInterpolate(EEG,EEG.chanlocs,'spherical');
 
-[EEG] = doEpochData(EEG,{'S202','S203'},[-200 800]);
+[EEG] = doSegmentData(EEG,{'S202','S203'},[-200 800]);
 
 [EEG] = doBaseline(EEG,[-200,0]);
 
