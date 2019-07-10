@@ -1,4 +1,4 @@
-function inputData = doArtifactRejection(inputData,type,criteria)
+function EEG = doArtifactRejection(EEG,type,criteria)
 
     % written by Olav Krigolson
     % implements a variety of artifact rejection methods and removes bad
@@ -14,30 +14,33 @@ function inputData = doArtifactRejection(inputData,type,criteria)
     % 'Min' - a minimum value check
     % 'Variance - checks the variance of each epoch
     
-    if isfield(inputData,'artifactPresent') == 0
-        inputData.artifactPresent = zeros(size(inputData.data,1),size(inputData.data,3));
+    if isfield(EEG,'artifactPresent') == 0
+        EEG.artifactPresent = zeros(size(EEG.data,1),size(EEG.data,3));
     end
     % note, multiple calls of the artifact Size will make this variable
     % effectively useless
-    if isfield(inputData,'artifactSize') == 0
-        inputData.artifactSize = zeros(size(inputData.data,1),size(inputData.data,3));
+    if isfield(EEG,'artifactSize') == 0
+        EEG.artifactSize = zeros(size(EEG.data,1),size(EEG.data,3));
     end
     if strcmp('Gradient',type)
+        
+        % adjust criteria to make the value per sampling point
+        criteria = criteria*1000/EEG.srate;
 
-        for channelCounter = 1:size(inputData.data,1)
+        for channelCounter = 1:size(EEG.data,1)
 
-            for segmentCounter = 1:size(inputData.data,3)
+            for segmentCounter = 1:size(EEG.data,3)
 
                 checkData = [];
-                checkData = abs(diff(inputData.data(channelCounter,:,segmentCounter)));
+                checkData = abs(diff(EEG.data(channelCounter,:,segmentCounter)));
 
                 testDiff = max(checkData);
 
                 if testDiff > criteria
-                    inputData.artifactPresent(channelCounter,segmentCounter) = inputData.artifactPresent(channelCounter,segmentCounter) + 1;
+                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                inputData.artifactSize(channelCounter,segmentCounter) = inputData.artifactSize(channelCounter,segmentCounter) + testDiff;
+                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + testDiff;
 
             end
 
@@ -46,23 +49,23 @@ function inputData = doArtifactRejection(inputData,type,criteria)
     end
     if strcmp('Difference',type)
 
-        for channelCounter = 1:size(inputData.data,1)
+        for channelCounter = 1:size(EEG.data,1)
 
-            for segmentCounter = 1:size(inputData.data,3)
+            for segmentCounter = 1:size(EEG.data,3)
 
                 voltageMax = [];
-                voltageMax = max(inputData.data(channelCounter,:,segmentCounter));
+                voltageMax = max(EEG.data(channelCounter,:,segmentCounter));
 
                 voltageMin = [];
-                voltageMin = min(inputData.data(channelCounter,:,segmentCounter));
+                voltageMin = min(EEG.data(channelCounter,:,segmentCounter));
 
                 difference = abs(voltageMax - voltageMin);
 
                 if difference > criteria
-                    inputData.artifactPresent(channelCounter,segmentCounter) = inputData.artifactPresent(channelCounter,segmentCounter) + 1;
+                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                inputData.artifactSize(channelCounter,segmentCounter) = inputData.artifactSize(channelCounter,segmentCounter) + difference;
+                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + difference;
 
             end
 
@@ -71,18 +74,18 @@ function inputData = doArtifactRejection(inputData,type,criteria)
     end
     if strcmp('Max',type)
 
-        for channelCounter = 1:size(inputData.data,1)
+        for channelCounter = 1:size(EEG.data,1)
 
-            for segmentCounter = 1:size(inputData.data,3)
+            for segmentCounter = 1:size(EEG.data,3)
 
                 voltageMax = [];
-                voltageMax = max(inputData.data(channelCounter,:,segmentCounter));
+                voltageMax = max(EEG.data(channelCounter,:,segmentCounter));
 
                 if voltageMax > criteria
-                    inputData.artifactPresent(channelCounter,segmentCounter) = inputData.artifactPresent(channelCounter,segmentCounter) + 1;
+                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                inputData.artifactSize(channelCounter,segmentCounter) = inputData.artifactSize(channelCounter,segmentCounter) + voltageMax;
+                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + voltageMax;
 
             end
 
@@ -91,18 +94,18 @@ function inputData = doArtifactRejection(inputData,type,criteria)
     end
     if strcmp('Min',type)
 
-        for channelCounter = 1:size(inputData.data,1)
+        for channelCounter = 1:size(EEG.data,1)
 
-            for segmentCounter = 1:size(inputData.data,3)
+            for segmentCounter = 1:size(EEG.data,3)
 
                 voltageMin = [];
-                voltageMin = min(inputData.data(channelCounter,:,segmentCounter));
+                voltageMin = min(EEG.data(channelCounter,:,segmentCounter));
 
                 if voltageMin < criteria
-                    inputData.artifactPresent(channelCounter,segmentCounter) = inputData.artifactPresent(channelCounter,segmentCounter) + 1;
+                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                inputData.artifactSize(channelCounter,segmentCounter) = inputData.artifactSize(channelCounter,segmentCounter) + voltageMin;
+                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + voltageMin;
 
             end
 
@@ -111,18 +114,18 @@ function inputData = doArtifactRejection(inputData,type,criteria)
     end    
     if strcmp('Variance',type)
 
-        for channelCounter = 1:size(inputData.data,1)
+        for channelCounter = 1:size(EEG.data,1)
 
-            for segmentCounter = 1:size(inputData.data,3)
+            for segmentCounter = 1:size(EEG.data,3)
 
                 theVariance = [];
-                theVariance = var(inputData.data(channelCounter,:,segmentCounter));
+                theVariance = var(EEG.data(channelCounter,:,segmentCounter));
 
                 if theVariance > criteria
-                    inputData.artifactPresent(channelCounter,segmentCounter) = inputData.artifactPresent(channelCounter,segmentCounter) + 1;
+                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                inputData.artifactSize(channelCounter,segmentCounter) = inputData.artifactSize(channelCounter,segmentCounter) + theVariance;
+                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + theVariance;
 
             end
 
@@ -130,12 +133,12 @@ function inputData = doArtifactRejection(inputData,type,criteria)
 
     end
 
-    if isfield(inputData,'artifactMethods') == 0
-        inputData.artifactMethods{1} = type;
-        inputData.artifactCriteria{1} = criteria;
+    if isfield(EEG,'artifactMethods') == 0
+        EEG.artifactMethods{1} = type;
+        EEG.artifactCriteria{1} = criteria;
     else
-        inputData.artifactMethods{end+1} = type;
-        inputData.artifactCriteria{end+1} = criteria;
+        EEG.artifactMethods{end+1} = type;
+        EEG.artifactCriteria{end+1} = criteria;
     end
     
 end
