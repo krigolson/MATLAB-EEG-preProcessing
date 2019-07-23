@@ -17,7 +17,7 @@ clc;
 
 [EEG] = doRemoveEpochs(EEG,EEG.artifactPresent,0);
 
-[ERP] = doERP(EEG,{'S202','S203'});
+[ERP] = doERP(EEG,{'S202','S203'},0);
 
 % plot the results, a P300 on Channel 52 (Pz)
 plot(ERP.times,ERP.data(52,:,1),'LineWidth',3);

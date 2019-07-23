@@ -27,16 +27,8 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
                 EEG.epoch(epochCounter).eventchannel = 0;
                 EEG.epoch(epochCounter).eventbvtime = EEG.event(segmentCounter).bvtime;
                 EEG.epoch(epochCounter).eventbvmknum = EEG.event(segmentCounter).bvmknum;
-                if strcmp(EEG.event(segmentCounter).code,'Stimulus')
-                    tempEvent = EEG.event(segmentCounter).type;
-                    tempEvent(1) = [];
-                    tempEvent = strip(tempEvent);
-                    EEG.epoch(epochCounter).eventtype = str2num(tempEvent);
-                    EEG.epoch(epochCounter).eventcode = 'Stimulus';
-                else
-                    EEG.epoch(epochCounter).eventtype = EEG.event(segmentCounter).type;
-                    EEG.epoch(epochCounter).eventcode = EEG.event(segmentCounter).code;
-                end
+                EEG.epoch(epochCounter).eventtype = EEG.event(segmentCounter).type;
+                EEG.epoch(epochCounter).eventcode = EEG.event(segmentCounter).code;
                 EEG.epoch(epochCounter).eventurevent = EEG.event(segmentCounter).urevent;
                 
                 tempMarkers(epochCounter,1) = epochCounter;
