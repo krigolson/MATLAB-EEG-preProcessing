@@ -8,7 +8,7 @@ clc;
 
 [EEG] = doFilter(EEG,0.1,30,2,60,500);
 
-[EEG] = doEpochData(EEG,{'S202','S203'},[-200 800]);
+[EEG] = doSegmentData(EEG,{'S202','S203'},[-200 800]);
 
 [EEG] = doBaseline(EEG,[-200,0]);
 

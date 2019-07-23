@@ -1,11 +1,11 @@
-function inputData = doSegmentData(inputData,epochMarkers,epochTimes)
+function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
 
     % by Olave Krigolson, March 19, 2019
     % function to replace pop_epoch as it has problems dealing with
     % overlapped segments.
     
-    startPoint = round(epochTimes(1)*inputData.srate/1000);
-    endPoint = round(epochTimes(2)*inputData.srate/1000);
+    startPoint = round(epochTimes(1)*EEG.srate/1000);
+    endPoint = round(epochTimes(2)*EEG.srate/1000);
     
     tempData = [];
     epochCounter = 1;
@@ -13,26 +13,34 @@ function inputData = doSegmentData(inputData,epochMarkers,epochTimes)
     
     for markerCounter = 1:size(epochMarkers,2)
         
-        for segmentCounter = 1:size(inputData.event,2)
+        for segmentCounter = 1:size(EEG.event,2)
             
-            if strcmp(inputData.event(segmentCounter).type,epochMarkers{markerCounter})
+            if strcmp(EEG.event(segmentCounter).type,epochMarkers{markerCounter})
                 
                 tempSegment = [];
-                currentLatency = round(inputData.event(segmentCounter).latency);
-                tempSegment = inputData.data(:,currentLatency+startPoint:currentLatency+endPoint);
+                currentLatency = round(EEG.event(segmentCounter).latency);
+                tempSegment = EEG.data(:,currentLatency+startPoint:currentLatency+endPoint);
                 tempData(:,:,epochCounter) = tempSegment;
-                inputData.epoch(epochCounter).event = epochCounter;
-                inputData.epoch(epochCounter).eventlatency = 0;
-                inputData.epoch(epochCounter).eventduration = abs(epochTimes(2) - epochTimes(1))/1000;
-                inputData.epoch(epochCounter).eventchannel = 0;
-                inputData.epoch(epochCounter).eventbvtime = inputData.event(segmentCounter).bvtime;
-                inputData.epoch(epochCounter).eventbvmknum = inputData.event(segmentCounter).bvmknum;
-                inputData.epoch(epochCounter).eventtype = inputData.event(segmentCounter).type;
-                inputData.epoch(epochCounter).eventcode = inputData.event(segmentCounter).code;
-                inputData.epoch(epochCounter).eventurevent = inputData.event(segmentCounter).urevent;
+                EEG.epoch(epochCounter).event = epochCounter;
+                EEG.epoch(epochCounter).eventlatency = 0;
+                EEG.epoch(epochCounter).eventduration = abs(epochTimes(2) - epochTimes(1))/1000;
+                EEG.epoch(epochCounter).eventchannel = 0;
+                EEG.epoch(epochCounter).eventbvtime = EEG.event(segmentCounter).bvtime;
+                EEG.epoch(epochCounter).eventbvmknum = EEG.event(segmentCounter).bvmknum;
+                if strcmp(EEG.event(segmentCounter).code,'Stimulus')
+                    tempEvent = EEG.event(segmentCounter).type;
+                    tempEvent(1) = [];
+                    tempEvent = strip(tempEvent);
+                    EEG.epoch(epochCounter).eventtype = str2num(tempEvent);
+                    EEG.epoch(epochCounter).eventcode = 'Stimulus';
+                else
+                    EEG.epoch(epochCounter).eventtype = EEG.event(segmentCounter).type;
+                    EEG.epoch(epochCounter).eventcode = EEG.event(segmentCounter).code;
+                end
+                EEG.epoch(epochCounter).eventurevent = EEG.event(segmentCounter).urevent;
                 
                 tempMarkers(epochCounter,1) = epochCounter;
-                tempMarkers(epochCounter,2) = str2num(inputData.event(segmentCounter).type);
+                tempMarkers(epochCounter,2) = EEG.epoch(epochCounter).eventtype;
                 
                 epochCounter = epochCounter + 1;
                 
@@ -42,23 +50,23 @@ function inputData = doSegmentData(inputData,epochMarkers,epochTimes)
         
     end
     
-    if isfield(inputData,'allMarkers') == 1
-        inputData.allMarkers = [];
-        inputData.allMarkers = tempMarkers;
+    if isfield(EEG,'allMarkers') == 1
+        EEG.allMarkers = [];
+        EEG.allMarkers = tempMarkers;
     end
 
-    inputData.data = [];
-    inputData.data = tempData;
-    inputData.pnts = size(tempData,2);
-    inputData.trials = size(tempData,3);
+    EEG.data = [];
+    EEG.data = tempData;
+    EEG.pnts = size(tempData,2);
+    EEG.trials = size(tempData,3);
     times(1) = epochTimes(1)/1000;
     for counter = 2:size(tempData,2)
-        times(counter) = times(counter-1) + 1/inputData.srate;
+        times(counter) = times(counter-1) + 1/EEG.srate;
     end
-    inputData.times = times;
-    inputData.xmin = min(times);
-    inputData.xmax = max(times);
-    inputData.epochMarkers = epochMarkers;
-    inputData.epochTimes = epochTimes;
+    EEG.times = times;
+    EEG.xmin = min(times);
+    EEG.xmax = max(times);
+    EEG.epochMarkers = epochMarkers;
+    EEG.epochTimes = epochTimes;
         
 end
