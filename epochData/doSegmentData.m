@@ -40,7 +40,14 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
                 EEG.epoch(epochCounter).eventurevent = EEG.event(segmentCounter).urevent;
                 
                 tempMarkers(epochCounter,1) = epochCounter;
-                tempMarkers(epochCounter,2) = EEG.epoch(epochCounter).eventtype;
+                if strcmp(EEG.event(segmentCounter).code,'Stimulus')
+                    tempEvent = EEG.event(segmentCounter).type;
+                    tempEvent(1) = [];
+                    tempEvent = strip(tempEvent);
+                    tempMarkers(epochCounter,2) = str2num(tempEvent);
+                else
+                    tempMarkers(epochCounter,2) = EEG.epoch(epochCounter).eventtype;
+                end
                 
                 epochCounter = epochCounter + 1;
                 
