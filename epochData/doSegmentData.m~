@@ -11,15 +11,17 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
     epochCounter = 1;
     tempMarkers = [];
     
+    for segmentCounter = 1:size(EEG.event,2)
+    
     for markerCounter = 1:size(epochMarkers,2)
         
         for segmentCounter = 1:size(EEG.event,2)
             
-            % force conversion to string for consitency
             if isstring(EEG.event(segmentCounter).type)
+                
             else
-                EEG.event(segmentCounter).type = string(EEG.event(segmentCounter).type);
-            end
+                
+                EEG.event(segmentCounter).type = string
             
             if strcmp(EEG.event(segmentCounter).type,epochMarkers{markerCounter})
                 
