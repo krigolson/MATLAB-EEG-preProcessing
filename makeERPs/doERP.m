@@ -24,7 +24,11 @@ function ERP = doERP(inputData,markers,optionFlag)
             
         end
         
-        ERP.data(:,:,conditionCounter) = nanmean(tempData,3);
+        if isempty(tempData)
+            ERP.data(:,:,conditionCounter) = NaN(size(inputData.data,1),size(inputData.data,2));
+        else
+            ERP.data(:,:,conditionCounter) = nanmean(tempData,3);
+        end
         ERP.epochCount(conditionCounter) = tempDataCounter - 1;
         
         if optionFlag == 1
