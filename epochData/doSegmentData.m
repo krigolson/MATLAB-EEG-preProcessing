@@ -16,7 +16,7 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
         for segmentCounter = 1:size(EEG.event,2)
             
             % force conversion to string for consitency
-            if isstring(EEG.event(segmentCounter).type)
+            if isstring(EEG.event(segmentCounter).type) || ischar(EEG.event(segmentCounter).type)
             else
                 EEG.event(segmentCounter).type = string(EEG.event(segmentCounter).type);
             end
