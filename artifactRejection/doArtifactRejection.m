@@ -14,14 +14,12 @@ function EEG = doArtifactRejection(EEG,type,criteria)
     % 'Min' - a minimum value check
     % 'Variance - checks the variance of each epoch
     
-    if isfield(EEG,'artifactPresent') == 0
-        EEG.artifactPresent = zeros(size(EEG.data,1),size(EEG.data,3));
-    end
-    % note, multiple calls of the artifact Size will make this variable
-    % effectively useless
-    if isfield(EEG,'artifactSize') == 0
-        EEG.artifactSize = zeros(size(EEG.data,1),size(EEG.data,3));
-    end
+    % to do
+    % add time window
+    
+    artifactPresent = zeros(size(EEG.data,1),size(EEG.data,3));
+    artifactSize = zeros(size(EEG.data,1),size(EEG.data,3));
+
     if strcmp('Gradient',type)
         
         % adjust criteria to make the value per sampling point
@@ -37,10 +35,10 @@ function EEG = doArtifactRejection(EEG,type,criteria)
                 testDiff = max(checkData);
 
                 if testDiff > criteria
-                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
+                    artifactPresent(channelCounter,segmentCounter) = artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + testDiff;
+                artifactSize(channelCounter,segmentCounter) = artifactSize(channelCounter,segmentCounter) + testDiff;
 
             end
 
@@ -62,10 +60,10 @@ function EEG = doArtifactRejection(EEG,type,criteria)
                 difference = abs(voltageMax - voltageMin);
 
                 if difference > criteria
-                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
+                    artifactPresent(channelCounter,segmentCounter) = artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + difference;
+                artifactSize(channelCounter,segmentCounter) = artifactSize(channelCounter,segmentCounter) + difference;
 
             end
 
@@ -82,10 +80,10 @@ function EEG = doArtifactRejection(EEG,type,criteria)
                 voltageMax = max(EEG.data(channelCounter,:,segmentCounter));
 
                 if voltageMax > criteria
-                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
+                    artifactPresent(channelCounter,segmentCounter) = artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + voltageMax;
+                artifactSize(channelCounter,segmentCounter) = artifactSize(channelCounter,segmentCounter) + voltageMax;
 
             end
 
@@ -102,10 +100,10 @@ function EEG = doArtifactRejection(EEG,type,criteria)
                 voltageMin = min(EEG.data(channelCounter,:,segmentCounter));
 
                 if voltageMin < criteria
-                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
+                    artifactPresent(channelCounter,segmentCounter) = artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + voltageMin;
+                artifactSize(channelCounter,segmentCounter) = artifactSize(channelCounter,segmentCounter) + voltageMin;
 
             end
 
@@ -122,10 +120,10 @@ function EEG = doArtifactRejection(EEG,type,criteria)
                 theVariance = var(EEG.data(channelCounter,:,segmentCounter));
 
                 if theVariance > criteria
-                    EEG.artifactPresent(channelCounter,segmentCounter) = EEG.artifactPresent(channelCounter,segmentCounter) + 1;
+                    artifactPresent(channelCounter,segmentCounter) = artifactPresent(channelCounter,segmentCounter) + 1;
                 end
 
-                EEG.artifactSize(channelCounter,segmentCounter) = EEG.artifactSize(channelCounter,segmentCounter) + theVariance;
+                artifactSize(channelCounter,segmentCounter) = artifactSize(channelCounter,segmentCounter) + theVariance;
 
             end
 
@@ -133,12 +131,14 @@ function EEG = doArtifactRejection(EEG,type,criteria)
 
     end
 
-    if isfield(EEG,'artifactMethods') == 0
-        EEG.artifactMethods{1} = type;
-        EEG.artifactCriteria{1} = criteria;
+    if isfield(EEG,'artifact') == 0
+        artPosition = 1;
     else
-        EEG.artifactMethods{end+1} = type;
-        EEG.artifactCriteria{end+1} = criteria;
+        artPosition = size(EEG.artifact,2)+1;
     end
+    EEG.artifact(artPosition).type = type;
+    EEG.artifact(artPosition).criteria = criteria;
+    EEG.artifact(artPosition).badSegments = artifactPresent;
+    EEG.artifact(artPosition).artifactSize = artifactSize;
     
 end

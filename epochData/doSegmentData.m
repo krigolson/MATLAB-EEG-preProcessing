@@ -21,7 +21,7 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
                 EEG.event(segmentCounter).type = string(EEG.event(segmentCounter).type);
             end
             
-            if strcmp(EEG.event(segmentCounter).type,epochMarkers{markerCounter}) && round(EEG.event(segmentCounter).latency)+endPoint < length(EEG.data)
+            if strcmp(EEG.event(segmentCounter).type,epochMarkers{markerCounter}) && round(EEG.event(segmentCounter).latency)+endPoint < length(EEG.data) && EEG.event(segmentCounter).latency > 500
                 
                 tempSegment = [];
                 currentLatency = round(EEG.event(segmentCounter).latency);
@@ -74,9 +74,9 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
     EEG.data = tempData;
     EEG.pnts = size(tempData,2);
     EEG.trials = size(tempData,3);
-    times(1) = epochTimes(1)/1000;
+    times(1) = epochTimes(1);
     for counter = 2:size(tempData,2)
-        times(counter) = times(counter-1) + 1/EEG.srate;
+        times(counter) = times(counter-1) + 1/EEG.srate*1000;
     end
     EEG.times = times;
     EEG.xmin = min(times);
