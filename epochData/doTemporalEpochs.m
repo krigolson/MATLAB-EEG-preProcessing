@@ -34,8 +34,8 @@ function [EEG] = doTemporalEpochs(EEG,timeWindow,overLap)
         EEG.epoch(epochCounter).eventbvmknum = 0;
         EEG.epoch(epochCounter).eventtype = 'Epoch';
         EEG.epoch(epochCounter).eventcode = 1;
-        EEG.epoch(epochCounter).eventtype = '1';
-        EEG.epoch(epochCounter).eventurevent = '1';
+        EEG.epoch(epochCounter).eventtype = 'S  1';
+        EEG.epoch(epochCounter).eventurevent = 'S  1';
                 
         tempMarkers(epochCounter,1) = epochCounter;
         tempMarkers(epochCounter,2) = 1;
