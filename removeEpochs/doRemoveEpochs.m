@@ -66,7 +66,7 @@ function inputData = doRemoveEpochs(inputData,removalMatrix,optionFlag)
 
     inputData.channelArtifactPercentages = sum(removalMatrix,2)/numberOfEpochs*100;
     
-    if checkCounter == 0
+    if checkCounter == 0 && optionFlag == 0
         disp('ALL TRIAL HAVE BEEN REMOVED!!!! Recommend interpolation or participant removal from analysis');
         badChannels = find(inputData.channelArtifactPercentages >= 100);
         disp('The following channels have too many artifacts:');
