@@ -24,8 +24,8 @@ function inputData = doRemoveEpochs(inputData,removalMatrix,optionFlag)
                 inputData.epoch(epochCounter) = [];
                 checkCounter = checkCounter - 1;
 
-                if isfield(inputData,'allMarkers') == 1
-                    inputData.allMarkers(epochCounter,:) = [];
+                if isfield(inputData,'segmentMarkers') == 1
+                    inputData.segmentMarkers(epochCounter,:) = [];
                 end
 
             end
@@ -54,8 +54,8 @@ function inputData = doRemoveEpochs(inputData,removalMatrix,optionFlag)
                 inputData.epoch(epochCounter) = [];
                 checkCounter = checkCounter - 1;
 
-                if isfield(inputData,'allMarkers') == 1
-                    inputData.allMarkers(epochCounter,:) = [];
+                if isfield(inputData,'segmentMarkers') == 1
+                    inputData.segmentMarkers(epochCounter,:) = [];
                 end
                 
             end

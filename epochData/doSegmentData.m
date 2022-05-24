@@ -65,10 +65,12 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
         
     end
     
-    if isfield(EEG,'allMarkers') == 1
-        EEG.allMarkers = [];
-        EEG.allMarkers = tempMarkers;
-    end
+    %if isfield(EEG,'allMarkers') == 1
+    %    EEG.allMarkers = [];
+    %    EEG.allMarkers = tempMarkers;
+    %end
+
+    EEG.segmentMarkers = tempMarkers;
 
     EEG.data = [];
     EEG.data = tempData;
