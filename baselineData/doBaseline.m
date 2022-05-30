@@ -13,5 +13,7 @@ function inputData = doBaseline(inputData,baselineWindow)
         inputData.baselineWindow = baselineWindow;
         
     end
+
+    inputData.baselineWindow = baselineWindow;
     
 end

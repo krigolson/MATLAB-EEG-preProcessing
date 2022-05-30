@@ -2,6 +2,7 @@ function doArtifactSummary(EEG)
 
 % function to simply display artifact perfectage information
 
+    figure;
     bar(EEG.channelArtifactPercentages);
     ylim([0 100]);
 

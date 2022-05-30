@@ -7,6 +7,6 @@ function [inputData] = doInterpolate(inputData,chanlocs,method)
     inputData.interpolate = 1;
     inputData.interpolateChannelsPrior = size(inputData,1);
     inputData.interpolateChannels = inputData.chanlocs;    
-    [inputData] = interpol(inputData, chanlocs, method);
+    [inputData] = interpol(inputData, chanlocs);
 
 end

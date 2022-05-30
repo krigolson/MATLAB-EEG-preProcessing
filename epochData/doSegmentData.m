@@ -12,6 +12,8 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
     tempMarkers = [];
     
     for markerCounter = 1:size(epochMarkers,2)
+
+        validCount = 0;
         
         for segmentCounter = 1:size(EEG.event,2)
             
@@ -58,10 +60,13 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
                 end
                 
                 epochCounter = epochCounter + 1;
+                validCount = validCount + 1;
                 
             end
             
         end
+
+        validMarkers(1,markerCounter) = validCount;
         
     end
     
@@ -85,5 +90,6 @@ function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
     EEG.xmax = max(times);
     EEG.epochMarkers = epochMarkers;
     EEG.epochTimes = epochTimes;
+    EEG.epochMarkers = validMarkers;
         
 end
