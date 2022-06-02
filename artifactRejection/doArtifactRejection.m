@@ -136,10 +136,13 @@ function EEG = doArtifactRejection(EEG,type,criteria)
     else
         artPosition = size(EEG.artifact,2)+1;
     end
+
     EEG.artifact(artPosition).type = type;
     EEG.artifact(artPosition).criteria = criteria;
     EEG.artifact(artPosition).badSegments = artifactPresent;
     EEG.artifact(artPosition).artifactSize = artifactSize;
-    EEG.artifact(artPosition).artifactPercentages = (sum(EEG.artifact.badSegments,2)/size(EEG.artifact.badSegments,2))*100;
+    sumArt = sum(EEG.artifact(artPosition).badSegments,2);
+    totalArt = size(EEG.artifact(artPosition).badSegments,2);
+    EEG.artifact(artPosition).artifactPercentages = sumArt/totalArt*100;
     
 end
