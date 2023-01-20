@@ -42,6 +42,10 @@ function ERP = doERP(inputData,markers,optionFlag)
         
     end
     
+    ERP.trialData = EEG.data;
+    ERP.epochs = EEG.epochs;
+    ERP.markers = EEG.segmentMarkers;
+    ERP.originalEpochs = EEG.trials;
     ERP.totalEpochs = numberOfEpochs;
     ERP.chanlocs = inputData.chanlocs;
     ERP.srate = inputData.srate;
