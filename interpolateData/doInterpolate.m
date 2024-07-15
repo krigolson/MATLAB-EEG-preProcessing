@@ -1,4 +1,4 @@
-function [inputData] = doInterpolate(inputData,chanlocs,method)
+function [inputData] = doInterpolate(inputData,chanlocs)
 
     % literally a shell to match our lab name calls, all credit to Marco Simoes
     % and the people who developed EEGLAB
