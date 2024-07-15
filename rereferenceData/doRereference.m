@@ -1,15 +1,15 @@
-function inputData = doRereference(inputData,referenceChannels,applyReferenceTo,chanlocs)
+function inputData = doRereference(inputData,referenceChannels,applyReferenceTo)
 
-% function to rereference EEG data, supports a single channel reference, a two channel reference, or a mean
-% reference
-% reference channels should be supplied as follows
-% {'TP9'} for a single reference
-% {'TP9' 'TP10'} for a two channel reference
-% {'AVERAGE'} for an average reference
-% applyReferenceTo can be {'ALL'} or any subset of channels
-% {'AF1',AF2','AF3',...}
-% a valid channel location file must be supplied to detemine channel
-% indicies
+    % function to rereference EEG data, supports a single channel reference, a two channel reference, or a mean
+    % reference
+    % reference channels should be supplied as follows
+    % {'TP9'} for a single reference
+    % {'TP9' 'TP10'} for a two channel reference
+    % {'AVERAGE'} for an average reference
+    % applyReferenceTo can be {'ALL'} or any subset of channels
+    % {'AF1',AF2','AF3',...}
+    % a valid channel location file must be supplied to detemine channel
+    % indicies
 
     % added support so either an EEG lab structure or a channels x time
     % matrix can be submitted
@@ -21,6 +21,8 @@ function inputData = doRereference(inputData,referenceChannels,applyReferenceTo,
     else
         data = inputData;
     end
+
+    chanlocs = inputData.chanlocs;
     
     if strcmp(referenceChannels,'AVERAGE')
         % reference the data using the average of all channels
