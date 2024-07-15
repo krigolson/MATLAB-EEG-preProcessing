@@ -41,6 +41,9 @@ function inputData = doRereference(inputData,referenceChannels,applyReferenceTo,
         end
 
     end
+
+    % add reference channel to output
+    inputData.refChannel = referenceChannel;
     
     % subtract the reference channel from the data
     if strcmp(applyReferenceTo,'ALL')
