@@ -1,0 +1,23 @@
+%%% this filter assumes you have some data loaded in an EEGLAB data
+%%% structure
+
+% the range of data points you have
+dataRange = [1 2000];
+
+% preserve the original EEG data
+originalEEG = EEG;
+
+% plot the raw data
+subplot(4,1,1);
+plot(originalEEG.data(1,dataRange(1):dataRange(2)));
+title('Raw Data');
+
+% bandpass 0.5 to 30 Hz
+filterParameters.low = 0.5;
+filterParameters.high = 30;
+filterParameters.notch = 60;
+EEG = doFilter(originalEEG,filterParameters);
+subplot(4,1,2);
+plot(originalEEG.data(1,dataRange(1):dataRange(2)));
+title('BandPass 0.5 to 30 Hz');
+
