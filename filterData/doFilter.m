@@ -8,4 +8,6 @@ function EEG = doFilter(EEG,filterParameters)
     %% 60 Hz Notch filter
     EEG = pop_eegfiltnew(EEG, filterParameters.notch-2, filterParameters.notch+2,[],1);
 
+    EEG.filterParameters = filterParameters;
+
 end
