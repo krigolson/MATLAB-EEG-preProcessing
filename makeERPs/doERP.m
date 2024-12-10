@@ -1,9 +1,15 @@
-function ERP = doERP(inputData,markers,optionFlag)
+function ERP = doERP(inputData,markers,varargin)
 
     % written as a shell by Olav Krigolson
     % makes ERPs based on markers
     % if optionFlag = 1 then do odd and even averages as extra conditions
     % to allow for internal consistency calculations
+
+    if isempty(varargin)
+        optionFlag = 0;
+    else
+        optionFlag = varargin{1};
+    end
     
     numberOfConditions = size(markers,2);
     numberOfEpochs = size(inputData.data,3);
@@ -44,7 +50,7 @@ function ERP = doERP(inputData,markers,optionFlag)
     
     ERP.trialData = inputData.data;
     ERP.epochs = inputData.epoch;
-    ERP.markers = inputData.segmentMarkers;
+    ERP.markers = markers;
     ERP.originalEpochs = inputData.trials;
     ERP.totalEpochs = numberOfEpochs;
     ERP.chanlocs = inputData.chanlocs;
