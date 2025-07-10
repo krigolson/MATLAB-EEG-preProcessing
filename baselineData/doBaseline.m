@@ -4,7 +4,7 @@ function inputData = doBaseline(inputData,baselineWindow)
     % expects EEG in EEGLAB format and a baseline window in s [-200 0]
 
     % convert to seconds if needed
-    if baselineWindow(1) < 1
+    if abs(baselineWindow(1)) < 10
         baselineWindow = baselineWindow * 1000;
     end
     
