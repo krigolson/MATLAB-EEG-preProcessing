@@ -11,7 +11,14 @@ function [EEG] = doTemporalEpochs(EEG,timeWindow,overLap)
     % updated on Oct 23, 2024 by O. Krigolson to switch to EEGLAB to handle
     % the boundary conditions createsd by clean_rawdata. Old code is below.
 
-    % specify time window in seconds and recurence as a decimal
+    % specify time window / overlap in milliseconds or seconds
+
+    if timeWindow > 100
+
+        timeWindow = timeWindow / 1000;
+        overLap = overLap / 1000;
+
+    end
     
     EEG = eeg_regepochs(EEG, 'limits', [0 timeWindow], 'recurrence', overLap);
     
