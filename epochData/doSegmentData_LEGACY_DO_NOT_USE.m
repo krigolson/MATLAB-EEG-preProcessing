@@ -1,4 +1,4 @@
-function EEG = doSegmentData(EEG,epochMarkers,epochTimes)
+function EEG = doSegmentData_LEGACY_DO_NOT_USE(EEG,epochMarkers,epochTimes)
 
     % by Olave Krigolson, March 19, 2019
     % function to replace pop_epoch as it has problems dealing with

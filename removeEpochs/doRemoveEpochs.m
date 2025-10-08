@@ -8,9 +8,14 @@ function inputData = doRemoveEpochs(inputData,removalMatrix,optionFlag)
     % data with NaNs (i.e., seperate channel averaging), note this is
     % typically not recommended as the blinks typically impact all channels
     % to some extent
+
+    % added functionality on the trials to keep
     
     numberOfEpochs = size(inputData.data,3);
     checkCounter = numberOfEpochs;
+
+    trialsRemoved(1,1:numberOfEpochs) = 1;
+    trialsRemoved(2,1:numberOfEpochs) = 0;
     
     if optionFlag == 0
     
@@ -28,7 +33,11 @@ function inputData = doRemoveEpochs(inputData,removalMatrix,optionFlag)
                     inputData.segmentMarkers(epochCounter,:) = [];
                 end
 
+                trialsRemoved(1,epochCounter) = 0;
+
             end
+
+            trialsRemoved(2,epochCounter) = max(inputData.artifact.artifactSize(:,epochCounter));
 
         end
     end
@@ -65,6 +74,8 @@ function inputData = doRemoveEpochs(inputData,removalMatrix,optionFlag)
     end
 
     inputData.channelArtifactPercentages = sum(removalMatrix,2)/numberOfEpochs*100;
+
+    inputData.trialsRemoved = flip(trialsRemoved);
     
     if checkCounter == 0 && optionFlag == 0
         disp('ALL TRIAL HAVE BEEN REMOVED!!!! Recommend interpolation or participant removal from analysis');
