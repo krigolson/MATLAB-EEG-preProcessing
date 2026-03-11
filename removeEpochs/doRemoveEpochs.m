@@ -37,7 +37,11 @@ function inputData = doRemoveEpochs(inputData,removalMatrix,optionFlag)
 
             end
 
-            trialsRemoved(2,epochCounter) = max(inputData.artifact.artifactSize(:,epochCounter));
+            try
+                trialsRemoved(2,epochCounter) = max(inputData.artifact.artifactSize(:,epochCounter));
+            catch
+                trialsRemoved(2,epochCounter) = 0;
+            end
 
         end
     end
