@@ -19,24 +19,46 @@ function EEG = doEpochData(EEG,epochMarkers,epochTimes)
     EEG = pop_epoch(EEG,epochMarkers,epochTimes);
 
     % -------------------------------------------------------------------------
-    % Step 1: Keep only the time-locking event (latency == 0) in each epoch
+    % Step 1: Keep only one time-locking event per epoch
     % -------------------------------------------------------------------------
+    timeLockTol = 1e-9;
+    epochFieldNames = fieldnames(EEG.epoch);
+    eventFields = epochFieldNames(startsWith(epochFieldNames, 'event'));
+
+    epochMarkersString = string(epochMarkers);
+
     for i = 1:length(EEG.epoch)
-        lats = cell2mat(EEG.epoch(i).eventlatency);
-        idx  = find(lats == 0);
-    
-        EEG.epoch(i).event         = EEG.epoch(i).event(idx);
-        EEG.epoch(i).eventlatency  = EEG.epoch(i).eventlatency(idx);
-        EEG.epoch(i).eventtype     = EEG.epoch(i).eventtype(idx);
-        EEG.epoch(i).eventduration = EEG.epoch(i).eventduration(idx);
-        EEG.epoch(i).eventchannel  = EEG.epoch(i).eventchannel(idx);
-        EEG.epoch(i).eventbvtime   = EEG.epoch(i).eventbvtime(idx);
-        EEG.epoch(i).eventbvmknum  = EEG.epoch(i).eventbvmknum(idx);
-        EEG.epoch(i).eventcode     = EEG.epoch(i).eventcode(idx);
-    
-        % Handle eventurvent if present
-        if isfield(EEG.epoch(i), 'eventurvent')
-            EEG.epoch(i).eventurvent = EEG.epoch(i).eventurvent(idx);
+        lats = doEpochEnsureNumericVector(EEG.epoch(i).eventlatency);
+        eventTypes = doEpochCellToStringCell(EEG.epoch(i).eventtype);
+        eventTypes = string(eventTypes);
+
+        % Candidates are events closest to time zero.
+        idxZero = find(abs(lats) <= timeLockTol);
+
+        % If multiple events are at zero, prioritize requested markers.
+        if numel(idxZero) > 1
+            markerIdx = find(ismember(eventTypes(idxZero), epochMarkersString), 1, 'first');
+            if ~isempty(markerIdx)
+                idxKeep = idxZero(markerIdx);
+            else
+                idxKeep = idxZero(1);
+            end
+        elseif numel(idxZero) == 1
+            idxKeep = idxZero;
+        else
+            % Fallback for floating-point shifts: keep nearest to zero.
+            [~, idxKeep] = min(abs(lats));
+        end
+
+        % Keep selected index for all event* fields that are indexed per event.
+        for fieldCounter = 1:numel(eventFields)
+            fieldName = eventFields{fieldCounter};
+            fieldValue = EEG.epoch(i).(fieldName);
+            nElements = numel(fieldValue);
+
+            if nElements > 1 && idxKeep <= nElements
+                EEG.epoch(i).(fieldName) = fieldValue(idxKeep);
+            end
         end
     end
     
@@ -44,15 +66,58 @@ function EEG = doEpochData(EEG,epochMarkers,epochTimes)
     % Step 2: Unwrap remaining 1x1 cells to plain scalars
     % -------------------------------------------------------------------------
     for i = 1:length(EEG.epoch)
-        EEG.epoch(i).eventlatency  = cell2mat(EEG.epoch(i).eventlatency);
-        EEG.epoch(i).eventduration = cell2mat(EEG.epoch(i).eventduration);
-        EEG.epoch(i).eventchannel  = cell2mat(EEG.epoch(i).eventchannel);
-        EEG.epoch(i).eventbvtime   = cell2mat(EEG.epoch(i).eventbvtime);
-        EEG.epoch(i).eventbvmknum  = cell2mat(EEG.epoch(i).eventbvmknum);
+        if isfield(EEG.epoch(i), 'eventlatency')
+            EEG.epoch(i).eventlatency = doEpochCellScalarToValue(EEG.epoch(i).eventlatency);
+        end
+        if isfield(EEG.epoch(i), 'eventduration')
+            EEG.epoch(i).eventduration = doEpochCellScalarToValue(EEG.epoch(i).eventduration);
+        end
+        if isfield(EEG.epoch(i), 'eventchannel')
+            EEG.epoch(i).eventchannel = doEpochCellScalarToValue(EEG.epoch(i).eventchannel);
+        end
+        if isfield(EEG.epoch(i), 'eventbvtime')
+            EEG.epoch(i).eventbvtime = doEpochCellScalarToValue(EEG.epoch(i).eventbvtime);
+        end
+        if isfield(EEG.epoch(i), 'eventbvmknum')
+            EEG.epoch(i).eventbvmknum = doEpochCellScalarToValue(EEG.epoch(i).eventbvmknum);
+        end
     end
     
     % store some stuff
     EEG.epochMarkers = epochMarkers;
     EEG.epochTimes = epochTimes;
         
+end
+
+function values = doEpochEnsureNumericVector(inputValues)
+    if iscell(inputValues)
+        values = cellfun(@doEpochNumericFromAny, inputValues);
+    elseif isnumeric(inputValues)
+        values = inputValues(:)';
+    else
+        values = doEpochNumericFromAny(inputValues);
+    end
+end
+
+function outputValue = doEpochCellScalarToValue(inputValue)
+    outputValue = inputValue;
+    if iscell(inputValue) && numel(inputValue) == 1
+        outputValue = inputValue{1};
+    end
+end
+
+function values = doEpochCellToStringCell(inputValues)
+    if iscell(inputValues)
+        values = cellfun(@(x) string(x), inputValues, 'UniformOutput', false);
+    else
+        values = {string(inputValues)};
+    end
+end
+
+function numericValue = doEpochNumericFromAny(value)
+    if isnumeric(value)
+        numericValue = double(value);
+    else
+        numericValue = str2double(string(value));
+    end
 end
