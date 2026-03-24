@@ -19,7 +19,7 @@ function EEG = doEpochData(EEG,epochMarkers,epochTimes)
     EEG = pop_epoch(EEG,epochMarkers,epochTimes);
 
     % -------------------------------------------------------------------------
-    % Step 1: Keep only one time-locking event per epoch
+    % Step 1: Keep only selected marker events, then one time-locking event
     % -------------------------------------------------------------------------
     timeLockTol = 1e-9;
     epochFieldNames = fieldnames(EEG.epoch);
@@ -31,6 +31,27 @@ function EEG = doEpochData(EEG,epochMarkers,epochTimes)
         lats = doEpochEnsureNumericVector(EEG.epoch(i).eventlatency);
         eventTypes = doEpochCellToStringCell(EEG.epoch(i).eventtype);
         eventTypes = string(eventTypes);
+
+        % Keep only events from requested ERP markers.
+        idxSelected = find(ismember(eventTypes, epochMarkersString));
+        if ~isempty(idxSelected)
+            for fieldCounter = 1:numel(eventFields)
+                fieldName = eventFields{fieldCounter};
+                fieldValue = EEG.epoch(i).(fieldName);
+                nElements = numel(fieldValue);
+                if nElements > 1
+                    validIdx = idxSelected(idxSelected <= nElements);
+                    if ~isempty(validIdx)
+                        EEG.epoch(i).(fieldName) = fieldValue(validIdx);
+                    end
+                end
+            end
+
+            % Refresh local variables after marker filtering.
+            lats = doEpochEnsureNumericVector(EEG.epoch(i).eventlatency);
+            eventTypes = doEpochCellToStringCell(EEG.epoch(i).eventtype);
+            eventTypes = string(eventTypes);
+        end
 
         % Candidates are events closest to time zero.
         idxZero = find(abs(lats) <= timeLockTol);
