@@ -1,13 +1,11 @@
-function EEG = doFilterHigh(EEG,filterParameters)
+function EEG = doFilterHigh(EEG,high)
 
-    % currently expects an EEGLAB data structure
-
-    %% Apply a bandpass filter
-    EEG = pop_eegfiltnew(EEG, [], filterParameters.low);
+    % Expects an EEGLAB data structure
     
-    %% 60 Hz Notch filter
-    %EEG = pop_eegfiltnew(EEG, filterParameters.notch-2, filterParameters.notch+2,[],1);
+    % Apply a bandpass filter
+    EEG = pop_eegfiltnew(EEG, 'hicutoff', high);
 
-    %EEG.filterParameters = filterParameters;
+    % save the filter parameters
+    EEG.filterParameters.high = high;
 
 end

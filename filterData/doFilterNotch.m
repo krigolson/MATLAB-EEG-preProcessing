@@ -1,13 +1,11 @@
-function EEG = doFilterNotch(EEG,filterParameters)
+function EEG = doFilterNotch(EEG,notch)
 
-    % currently expects an EEGLAB data structure
-
-    %% Apply a bandpass filter
-    %EEG = pop_eegfiltnew(EEG, [], filterParameters.low);
+    % Expects an EEGLAB data structure
     
-    %% 60 Hz Notch filter
-    EEG = pop_eegfiltnew(EEG, filterParameters.notch-2, filterParameters.notch+2,[],1);
+    % Apply a notch filter
+    EEG = pop_eegfiltnew(EEG, notch-2, notch+2,[],1);
 
-    %EEG.filterParameters = filterParameters;
+    % save the parameters
+    EEG.filterParameters.notch = notch;
 
 end
