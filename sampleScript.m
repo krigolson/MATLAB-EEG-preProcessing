@@ -35,3 +35,9 @@ EEG = doICLabel(EEG);
 
 % interpolate channels removed by clean_rawdata
 EEG = doInterpolateChannels(EEG, chanLocs64);
+
+% epoch continuous data
+EEG = doEpochData(EEG,{'S101','S102'},[-200 600]);
+
+% baseline correct epoched data
+EEG = doBaselineCorrection(EEG);
