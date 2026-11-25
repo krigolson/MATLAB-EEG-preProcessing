@@ -6,7 +6,7 @@ clc;
 
 [EEG] = doRereference(EEG,{'TP9','TP10'});
 
-[EEG] = doFilter(EEG,0.1,30,2,60,500);
+[EEG] = doFilter(EEG,struct('low',0.1,'high',30,'notch',60));
 
 [EEG] = doEpochData(EEG,{'S202','S203'},[-200 800]);
 

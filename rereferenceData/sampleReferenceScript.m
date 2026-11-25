@@ -11,7 +11,7 @@ amountOfDataToPlot = 500;
 referenceChannels = {'TP9' 'TP10'};
 
 % filter the data to remove the offsets
-EEG.data = doFilter(EEG.data,0.1,30,60,4,EEG.srate);
+EEG = doFilter(EEG,struct('low',0.1,'high',30,'notch',60));
 
 % get some data to plot from before the rereference
 preRereferenceData = squeeze(EEG.data(channelToPlot,1:amountOfDataToPlot));

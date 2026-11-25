@@ -67,7 +67,7 @@ for fileCounter = 1:length(fileNames)
         
     [EEG] = doRereference(EEG,{'TP9','TP10'});
 
-    [EEG] = doFilter(EEG,0.1,30,60,2,500);
+    [EEG] = doFilter(EEG,struct('low',0.1,'high',30,'notch',60));
 
     [EEG] = doEpochData(EEG,{'S202','S203'},[-500 1500]);
 
