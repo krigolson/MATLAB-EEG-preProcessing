@@ -65,7 +65,7 @@ for fileCounter = 1:length(fileNames)
         [EEG] = doInterpolate(EEG,chanlocs,'spherical');
     end
         
-    [EEG] = doRereference(EEG,{'TP9','TP10'},EEG.chanlocs);
+    [EEG] = doRereference(EEG,{'TP9','TP10'});
 
     [EEG] = doFilter(EEG,0.1,30,60,2,500);
 

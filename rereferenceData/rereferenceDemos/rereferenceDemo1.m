@@ -54,7 +54,7 @@ title('TP10');
 pause;
 
 % now, what happens when we reference to the average of the mastoids
-reference1Data = doRereference(originalData,reference1,EEG.chanlocs);
+reference1Data = rereferenceKeepingChannels(EEG,reference1);
 figure;
 subplot(2,4,1);
 plot(timePoints,originalData(1,:));
@@ -115,7 +115,7 @@ title('Average Mastoid: TP10');
 
 pause;
 % now, what happens when we reference to the average of the mastoids
-reference2Data = doRereference(originalData,reference2,EEG.chanlocs);
+reference2Data = rereferenceKeepingChannels(EEG,reference2);
 figure;
 subplot(2,4,1);
 plot(timePoints,originalData(1,:));
@@ -176,7 +176,7 @@ title('Average AF3 AF4: TP10');
 
 pause;
 % now, what happens when we reference to the average of the mastoids
-reference3Data = doRereference(originalData,reference3,EEG.chanlocs);
+reference3Data = rereferenceKeepingChannels(EEG,reference3);
 figure;
 subplot(2,4,1);
 plot(timePoints,originalData(1,:));
@@ -234,3 +234,23 @@ plot(timePoints,reference3Data(60,:));
 hold off;
 ylim([-50 50]);
 title('Average Reference: TP10');
+
+
+function data = rereferenceKeepingChannels(EEG,referenceChannels)
+
+    % The lab function doRereference (EEGLAB's pop_reref) removes the
+    % reference channels from the data. This demo plots the reference
+    % channels after rereferencing, so the rereference is done by hand here
+    % and every channel is kept: the mean of the reference channels is
+    % subtracted from every channel. {'AVERAGE'} uses all channels.
+    if any(strcmpi(referenceChannels,'AVERAGE'))
+        referenceIndex = true(1,size(EEG.data,1));
+    else
+        referenceIndex = ismember({EEG.chanlocs.labels},referenceChannels);
+        if nnz(referenceIndex) ~= numel(referenceChannels)
+            error('Reference channel not found in EEG.chanlocs.');
+        end
+    end
+    data = EEG.data - mean(EEG.data(referenceIndex,:),1);
+
+end

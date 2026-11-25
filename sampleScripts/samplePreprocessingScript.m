@@ -4,7 +4,7 @@ clc;
 
 [EEG] = doLoadBVData('Cognitive_Assessment_01.vhdr');
 
-[EEG] = doRereference(EEG,{'TP9','TP10'},'ALL',EEG.chanlocs);
+[EEG] = doRereference(EEG,{'TP9','TP10'});
 
 [EEG] = doFilter(EEG,0.1,30,2,60,500);
 

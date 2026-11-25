@@ -10,7 +10,7 @@ clc;
 % not needed but here for demonstration purposes
 % [EEG] = doRemoveChannels(EEG,{},EEG.chanlocs);
 
-[EEG] = doRereference(EEG,{'TP9','TP10'},{'ALL'},EEG.chanlocs);
+[EEG] = doRereference(EEG,{'TP9','TP10'});
 
 EEG = doFilter(EEG,0.01,0,2,0,500);
 EEG = doFilter(EEG,0,30,2,60,500);
