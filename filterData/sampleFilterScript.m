@@ -3,7 +3,7 @@ close all;
 clc;
 
 load('sampleEEGData.mat');
-lowCutoff = 0.1;                    % a specified low pass value
+lowCutoff = 0.5;                    % a specified low pass value
 highCutoff = 30;                    % a specified high pass value
 amountOfDataToPlot = 500;           % the amount of data to plot for comparison, has no impact on the actual filtering
 

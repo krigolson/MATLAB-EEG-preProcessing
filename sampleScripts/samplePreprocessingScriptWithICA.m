@@ -12,7 +12,7 @@ clc;
 
 [EEG] = doRereference(EEG,{'TP9','TP10'});
 
-EEG = doFilter(EEG,struct('low',0.01,'high',30,'notch',60));
+EEG = doFilter(EEG,struct('low',0.5,'high',30,'notch',60));
 
 [EEG] = doICA(EEG,0);
 
